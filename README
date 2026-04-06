@@ -1,0 +1,27 @@
+# Webhook Test Repository
+
+This repository is used to test GitHub webhooks.
+
+## Purpose
+The goal of this repo is to verify that webhook events are being sent and received correctly.
+
+## Test Steps
+1. Make a change to this file
+2. Commit and push to GitHub
+3. Check your webhook listener/server
+4. Verify that a payload is received
+
+## Sample Change Log
+- Initial commit
+- Updated README to trigger webhook
+
+## Webhook Events to Watch
+- push
+- pull_request
+- repository
+
+## Notes
+If your webhook is working, you should see a JSON payload in your server logs after each push.
+
+## Timestamp
+Last updated: <!-- update this manually -->
