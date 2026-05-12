@@ -1,8 +1,13 @@
-// Severity 5 — Infinite Loop / Performance Bug
+
+
 public class A {
-    public static void main(String[] args){
-        while(true){
-            System.out.println("Server Running...");
-        }
+
+    public static void main(String[] args) {
+
+        Object obj = "Hello";
+
+        Integer num = (Integer) obj;
+
+        System.out.println(num);
     }
 }
