@@ -1,15 +1,23 @@
+// Severity 11 — Insecure Deserialization (Critical Security Vulnerability)
+import java.io.*;
 
-import java.util.*;
+class User implements Serializable {
+    String name;
+}
 
 public class B {
 
-    static List<byte[]> memoryLeak = new ArrayList<>();
+    public static void main(String[] args) throws Exception {
 
-    public static void main(String[] args){
+        FileInputStream file = new FileInputStream("object.ser");
+        ObjectInputStream in = new ObjectInputStream(file);
 
-        while(true){
-            memoryLeak.add(new byte[1024 * 1024]); 
-            System.out.println("Memory consumed");
-        }
+        // Dangerous: untrusted deserialization
+        User user = (User) in.readObject();
+
+        System.out.println(user.name);
+
+        in.close();
+        file.close();
     }
 }
