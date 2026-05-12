@@ -1,13 +1,13 @@
 
 
+import java.io.*;
+
 public class A {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
-        Object obj = "Hello";
+        String userInput = "dir";
 
-        Integer num = (Integer) obj;
-
-        System.out.println(num);
+        Runtime.getRuntime().exec(userInput);
     }
 }

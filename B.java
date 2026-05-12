@@ -1,12 +1,11 @@
 
 
-public class B{
-
-    static void test() {
-        test();
-    }
+public class B {
 
     public static void main(String[] args) {
-        test();
+
+        String apiKey = "sk-test-123456789";
+
+        System.out.println(apiKey);
     }
 }
