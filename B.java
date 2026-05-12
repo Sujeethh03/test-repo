@@ -1,32 +1,25 @@
+// Severity 8 — SQL Injection Vulnerability
+import java.sql.*;
 
 public class B {
+    public static void main(String[] args) throws Exception {
 
-    static final Object lock1 = new Object();
-    static final Object lock2 = new Object();
+        String userInput = "' OR '1'='1";
 
-    public static void main(String[] args){
+        Connection con = DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/test",
+            "root",
+            "password"
+        );
 
-        Thread t1 = new Thread(() -> {
-            synchronized(lock1){
-                System.out.println("Thread 1 locked lock1");
+        Statement stmt = con.createStatement();
 
-                synchronized(lock2){
-                    System.out.println("Thread 1 locked lock2");
-                }
-            }
-        });
+        String query = "SELECT * FROM users WHERE username = '" + userInput + "'";
 
-        Thread t2 = new Thread(() -> {
-            synchronized(lock2){
-                System.out.println("Thread 2 locked lock2");
+        ResultSet rs = stmt.executeQuery(query);
 
-                synchronized(lock1){
-                    System.out.println("Thread 2 locked lock1");
-                }
-            }
-        });
-
-        t1.start();
-        t2.start();
+        while(rs.next()){
+            System.out.println(rs.getString("username"));
+        }
     }
 }
