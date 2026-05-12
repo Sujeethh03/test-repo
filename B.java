@@ -1,23 +1,32 @@
-// Severity 11 — Insecure Deserialization (Critical Security Vulnerability)
-import java.io.*;
-
-class User implements Serializable {
-    String name;
-}
 
 public class B {
 
-    public static void main(String[] args) throws Exception {
+    static final Object lock1 = new Object();
+    static final Object lock2 = new Object();
 
-        FileInputStream file = new FileInputStream("object.ser");
-        ObjectInputStream in = new ObjectInputStream(file);
+    public static void main(String[] args){
 
-        // Dangerous: untrusted deserialization
-        User user = (User) in.readObject();
+        Thread t1 = new Thread(() -> {
+            synchronized(lock1){
+                System.out.println("Thread 1 locked lock1");
 
-        System.out.println(user.name);
+                synchronized(lock2){
+                    System.out.println("Thread 1 locked lock2");
+                }
+            }
+        });
 
-        in.close();
-        file.close();
+        Thread t2 = new Thread(() -> {
+            synchronized(lock2){
+                System.out.println("Thread 2 locked lock2");
+
+                synchronized(lock1){
+                    System.out.println("Thread 2 locked lock1");
+                }
+            }
+        });
+
+        t1.start();
+        t2.start();
     }
 }
