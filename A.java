@@ -4,23 +4,23 @@ public class A {
 
     public static void main(String[] args) throws Exception {
 
-        String userInput = args[0];
+        File file = new File("data.txt");
 
-        Process process =
-                Runtime.getRuntime().exec(userInput);
         BufferedReader br =
                 new BufferedReader(
-                        new InputStreamReader(
-                                process.getInputStream()
-                        )
+                        new FileReader(file)
                 );
 
         String line;
 
         while ((line = br.readLine()) != null) {
 
-            System.out.println(line);
+            if (line.contains(args[0])) {
+
+                System.out.println(line.toLowerCase());
+            }
         }
-        System.out.println(process.exitValue());
+
+        br.close();
     }
 }
