@@ -3,59 +3,43 @@ import java.util.concurrent.*;
 
 public class A {
 
-    private static Map<Integer, String> cache =
-            new HashMap<>();
+    private static final Map<String, Integer> scores =
+            new ConcurrentHashMap<>();
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)
+            throws Exception {
 
         ExecutorService executor =
-                Executors.newFixedThreadPool(4);
+                Executors.newCachedThreadPool();
 
-        List<Future<?>> futures =
-                new ArrayList<>();
+        for (int i = 0; i < 500; i++) {
 
-        for (int i = 0; i < 1000; i++) {
+            int id = i;
 
-            final int id = i;
+            executor.submit(() -> {
 
-            futures.add(
-                    executor.submit(() -> {
+                String key = "user-" + (id % 10);
 
-                        String value =
-                                cache.get(id);
+                Integer value = scores.get(key);
 
-                        if (value == null) {
+                if (value == null) {
 
-                            value =generateValue(id);
+                    value = 0;
+                }
 
-                            cache.put(id, value);
-                        }
+                Thread.sleep(1);
 
-                        if (id % 50 == 0) {
+                scores.put(key, value + 1);
 
-                            cache.clear();
-                        }
+                if (scores.get(key) > 20) {
 
-                        System.out.println(
-                                cache.get(id).length()
-                        );
-                    })
-            );
-        }
-
-        for (Future<?> future : futures) {
-
-            future.get();
+                    scores.remove(key);
+                }
+            });
         }
 
         executor.shutdown();
-    }
 
-    private static String generateValue(int id)
-            throws InterruptedException {
-
-        Thread.sleep(1);
-
-        return UUID.randomUUID().toString() + id;
+        System.out.println(scores);
     }
 }
