@@ -1,28 +1,61 @@
 import java.util.*;
+import java.util.concurrent.*;
 
 public class A {
 
-    public static void main(String[] args) {
+    private static Map<Integer, String> cache =
+            new HashMap<>();
 
-        List<Integer> nums = new ArrayList<>();
+    public static void main(String[] args) throws Exception {
 
-        for (int i = 0; i <= 5; i++) {
+        ExecutorService executor =
+                Executors.newFixedThreadPool(4);
 
-            nums.add(i);
+        List<Future<?>> futures =
+                new ArrayList<>();
+
+        for (int i = 0; i < 1000; i++) {
+
+            final int id = i;
+
+            futures.add(
+                    executor.submit(() -> {
+
+                        String value =
+                                cache.get(id);
+
+                        if (value == null) {
+
+                            value =generateValue(id);
+
+                            cache.put(id, value);
+                        }
+
+                        if (id % 50 == 0) {
+
+                            cache.clear();
+                        }
+
+                        System.out.println(
+                                cache.get(id).length()
+                        );
+                    })
+            );
         }
 
-        for (Integer n : nums) {
+        for (Future<?> future : futures) {
 
-            if (n % 2 == 0) {
-
-                nums.remove(n);
-            }
+            future.get();
         }
 
-        System.out.println(nums.get(4));
+        executor.shutdown();
+    }
 
-        int total = 10 / (nums.size() - 3);
+    private static String generateValue(int id)
+            throws InterruptedException {
 
-        System.out.println(total);
+        Thread.sleep(1);
+
+        return UUID.randomUUID().toString() + id;
     }
 }
