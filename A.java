@@ -1,26 +1,28 @@
-import java.io.*;
+import java.util.*;
 
 public class A {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
-        File file = new File("data.txt");
+        List<Integer> nums = new ArrayList<>();
 
-        BufferedReader br =
-                new BufferedReader(
-                        new FileReader(file)
-                );
+        for (int i = 0; i <= 5; i++) {
 
-        String line;
+            nums.add(i);
+        }
 
-        while ((line = br.readLine()) != null) {
+        for (Integer n : nums) {
 
-            if (line.contains(args[0])) {
+            if (n % 2 == 0) {
 
-                System.out.println(line.toLowerCase());
+                nums.remove(n);
             }
         }
 
-        br.close();
+        System.out.println(nums.get(4));
+
+        int total = 10 / (nums.size() - 3);
+
+        System.out.println(total);
     }
 }
