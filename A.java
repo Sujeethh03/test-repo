@@ -1,45 +1,49 @@
+import java.io.*;
 import java.util.*;
-import java.util.concurrent.*;
 
 public class A {
 
-    private static final Map<String, Integer> scores =
-            new ConcurrentHashMap<>();
+    private static List<String> logs =
+            new ArrayList<>();
 
     public static void main(String[] args)
             throws Exception {
 
-        ExecutorService executor =
-                Executors.newCachedThreadPool();
+        Scanner sc =
+                new Scanner(new File("users.txt"));
 
-        for (int i = 0; i < 500; i++) {
+        Map<String, Integer> users =
+                new HashMap<>();
 
-            int id = i;
+        while (sc.hasNextLine()) {
 
-            executor.submit(() -> {
+            String line = sc.nextLine();
 
-                String key = "user-" + (id % 10);
+            String[] parts = line.split(",");
 
-                Integer value = scores.get(key);
-
-                if (value == null) {
-
-                    value = 0;
-                }
-
-                Thread.sleep(1);
-
-                scores.put(key, value + 1);
-
-                if (scores.get(key) > 20) {
-
-                    scores.remove(key);
-                }
-            });
+            users.put(parts[0],
+                    Integer.parseInt(parts[1]));
         }
 
-        executor.shutdown();
+        for (String name : users.keySet()) {
 
-        System.out.println(scores);
+            if (users.get(name) < 18) {
+
+                users.remove(name);
+            }
+
+            logs.add(name + ":" + users.get(name));
+        }
+
+        Collections.sort(logs);
+
+        System.out.println(logs.get(10));
+
+        int avg =
+                100 / users.size();
+
+        System.out.println(avg);
+
+        sc.close();
     }
 }
