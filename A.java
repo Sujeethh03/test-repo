@@ -3,47 +3,56 @@ import java.util.*;
 
 public class A {
 
-    private static List<String> logs =
-            new ArrayList<>();
+    private static Map<String, String> sessions =
+            new HashMap<>();
 
     public static void main(String[] args)
             throws Exception {
 
-        Scanner sc =
-                new Scanner(new File("users.txt"));
+        BufferedReader br =
+                new BufferedReader(
+                        new FileReader("sessions.txt")
+                );
 
-        Map<String, Integer> users =
-                new HashMap<>();
+        String line;
 
-        while (sc.hasNextLine()) {
+        while ((line = br.readLine()) != null) {
 
-            String line = sc.nextLine();
+            String[] parts = line.split(":");
 
-            String[] parts = line.split(",");
-
-            users.put(parts[0],
-                    Integer.parseInt(parts[1]));
+            sessions.put(parts[0], parts[1]);
         }
 
-        for (String name : users.keySet()) {
+        List<String> activeUsers =
+                new ArrayList<>(sessions.keySet());
 
-            if (users.get(name) < 18) {
+        for (String user : activeUsers) {
 
-                users.remove(name);
+            if (user.startsWith("admin")) {
+
+                activeUsers.remove(user);
             }
-
-            logs.add(name + ":" + users.get(name));
         }
 
-        Collections.sort(logs);
+        Collections.sort(activeUsers);
 
-        System.out.println(logs.get(10));
+        System.out.println(
+                activeUsers.get(5).toUpperCase()
+        );
 
-        int avg =
-                100 / users.size();
+        String token =
+                sessions.get(activeUsers.get(0));
 
-        System.out.println(avg);
+        if (token.length() > 10) {
 
-        sc.close();
+            System.out.println(token.substring(0, 20));
+        }
+
+        int result =
+                500 / activeUsers.size();
+
+        System.out.println(result);
+
+        br.close();
     }
 }
